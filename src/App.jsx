@@ -356,12 +356,15 @@ export default function App() {
   const saveContact = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    const newContact = {
-      id: generateId(),
-      name: fd.get('contactName'),
-      role: fd.get('contactRole'),
-      phone: fd.get('contactPhone'),
-      email: fd.get('contactEmail')
+    const newContact = { 
+        id: generateId(), 
+        name: fd.get('contactName'), 
+        role: fd.get('contactRole'), 
+        phone: fd.get('contactPhone'), 
+        email: fd.get('contactEmail'),
+        // Ajout des nouveaux champs
+        address: fd.get('contactAddress'),
+        siret: fd.get('contactSiret')
     };
 
     // Deep update to add contact to specific task
@@ -411,6 +414,45 @@ export default function App() {
   };
 
   const aiStub = () => alert("AI Rephrase would trigger here.");
+
+  // --- NOUVELLE FONCTION : Génère le numéro de facture (ex: 2025-001) ---
+  const generateInvoiceNumber = () => {
+    const year = new Date().getFullYear();
+    // On cherche tous les numéros de facture existants dans toutes les tâches
+    let maxNum = 0;
+    projects.forEach(p => {
+      p.tasks.forEach(t => {
+        if (t.invoiceNumber && t.invoiceNumber.startsWith(`${year}-`)) {
+          const num = parseInt(t.invoiceNumber.split('-')[1]);
+          if (num > maxNum) maxNum = num;
+        }
+      });
+    });
+    // On incrémente (ex: 001)
+    const nextNum = (maxNum + 1).toString().padStart(3, '0');
+    return `${year}-${nextNum}`;
+  };
+
+  // --- MODIFICATION : Quand on ouvre la facture, on génère le numéro si besoin ---
+  const openInvoice = (task) => {
+    if (!task.invoiceNumber) {
+      // Si la tâche n'a pas encore de numéro, on en crée un et on sauvegarde
+      const newInvoiceNumber = generateInvoiceNumber();
+      const updatedTask = { ...task, invoiceNumber: newInvoiceNumber, invoiceDate: new Date().toLocaleDateString('fr-FR') };
+      
+      // Mise à jour du state (sauvegarde)
+      const updatedProjects = projects.map(p => {
+        if (p.id !== activeProjectId) return p;
+        const updatedTasks = p.tasks.map(t => t.id === task.id ? updatedTask : t);
+        return { ...p, tasks: updatedTasks };
+      });
+      setProjects(updatedProjects);
+      // On met à jour la vue active avec les nouvelles données
+      // Attention: il faut attendre que le state se mette à jour, ou utiliser l'objet local
+      // Pour faire simple ici, on force la vue invoice
+    }
+    setView('invoice');
+  };
 
   // VIEWS
   const renderDashboard = () => (
@@ -486,7 +528,14 @@ export default function App() {
             <Icons.Back /> <span style={{fontSize: '17px', fontWeight: '500'}}>Project</span>
           </div>
           <span style={{ fontWeight: '600', fontSize: '17px' }}>Task</span>
-          <button onClick={() => setModal({ open: true, type: 'task', initialData: activeTask })} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', fontSize:'17px', fontWeight:'500' }}>Edit</button> 
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={() => openInvoice(activeTask)} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', padding:'4px' }}>
+                <Icons.Printer />
+            </button>
+            <button onClick={() => setModal({ open: true, type: 'task', initialData: activeTask })} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', fontSize:'17px', fontWeight:'500' }}>
+                Edit
+            </button> 
+          </div> 
         </div></div>
 
         <div style={styles.body}>
@@ -580,27 +629,113 @@ export default function App() {
   };
 
   const renderInvoice = () => {
-    if (!activeProject) return null;
-    const total = activeProject.tasks.reduce((sum, t) => sum + (parseFloat(t.budget) || 0), 0);
-    const date = new Date().toLocaleDateString('en-US');
+    // On facture la tâche active
+    if (!activeTask) return null;
+    
+    // On prend le premier contact de la tâche comme le CLIENT
+    const client = (activeTask.contacts && activeTask.contacts.length > 0) ? activeTask.contacts[0] : {};
+    
+    // Si la tâche n'a pas encore de numéro (cas rare si on passe par openInvoice), on met un placeholder
+    const invoiceNum = activeTask.invoiceNumber || "DRAFT";
+    const invoiceDate = activeTask.invoiceDate || new Date().toLocaleDateString('fr-FR');
 
     return (
       <div style={{ backgroundColor: 'white', minHeight: '100vh', color: 'black' }}>
-         <div style={{ padding: '10px', background: '#eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
-            <button onClick={() => setView('project')} style={{ background: 'none', border: 'none', color: '#007AFF', fontSize: '16px', cursor: 'pointer' }}>Close</button>
-            <span style={{ fontWeight: '600' }}>Preview</span>
-            <button onClick={() => window.print()} style={{ background: '#007AFF', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Print / PDF</button>
+         {/* Toolbar (Ne s'imprime pas) */}
+         <div className="no-print" style={{ padding: '10px', background: '#eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
+            <button onClick={() => setView('task-detail')} style={{ background: 'none', border: 'none', color: '#007AFF', fontSize: '16px', cursor: 'pointer' }}>Close</button>
+            <span style={{ fontWeight: '600' }}>Aperçu Facture</span>
+            <button onClick={() => window.print()} style={{ background: '#007AFF', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Imprimer / PDF</button>
          </div>
+
+         {/* --- STYLE DU PDF ETHER --- */}
          <div style={styles.invoiceFrame}>
-            <div style={styles.invoiceHeader}>
-               <div><h1 style={{ margin: 0, fontSize: '32px' }}>INVOICE</h1><p style={{ margin: '8px 0 0 0', color: '#666' }}>Project: {activeProject.name}</p></div>
-               <div style={{ textAlign: 'right' }}><p style={{ margin: 0 }}>Date: {date}</p><p style={{ margin: '4px 0 0 0' }}>Ref: {activeProject.id.substr(1, 6).toUpperCase()}</p></div>
+            <style>{`
+              @media print { .no-print { display: none !important; } } 
+              body { -webkit-print-color-adjust: exact; }
+            `}</style>
+
+            {/* HEADER: LOGO vs CLIENT */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '60px', alignItems: 'flex-start' }}>
+                {/* GAUCHE : TON ENTREPRISE [cite: 1, 2, 3, 4, 5, 6, 7, 8] */}
+                <div style={{ maxWidth: '45%' }}>
+                    <h1 style={{ margin: '0 0 10px 0', fontSize: '42px', fontWeight: '800', letterSpacing: '-1px' }}>ETHER.</h1>
+                    <p style={{ margin: 0, fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' }}>Visionary Collective</p>
+                    <div style={{ marginTop: '15px', fontSize: '11px', lineHeight: '1.4', color: '#333' }}>
+                        <div>AUTO ENTREPRISE</div>
+                        <div>SIRET: 98 74 98 888 000 13</div>
+                        <div>27 Impasse Coste, 13600, La Ciotat</div>
+                        <div>+33782917463</div>
+                        <div>etherstudiocom@gmail.com</div>
+                    </div>
+                </div>
+
+                {/* DROITE : CLIENT [cite: 9, 10] */}
+                <div style={{ maxWidth: '45%', textAlign: 'right' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>À:</div>
+                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{client.name || "Nom du Client"}</div>
+                    <div style={{ fontSize: '11px', lineHeight: '1.4', color: '#333', marginTop: '4px' }}>
+                        {client.siret && <div>SIRET: {client.siret}</div>}
+                        {client.address && <div style={{ whiteSpace: 'pre-wrap' }}>{client.address}</div>}
+                        {client.phone && <div>{client.phone}</div>}
+                        {client.email && <div>{client.email}</div>}
+                    </div>
+                </div>
             </div>
-            <table style={styles.invoiceTable}>
-               <thead><tr style={{ borderBottom: '2px solid #000' }}><th style={{ ...styles.invoiceCell, width: '60%' }}>Description</th><th style={{ ...styles.invoiceCell, width: '20%' }}>Status</th><th style={{ ...styles.invoiceCell, textAlign: 'right' }}>Amount</th></tr></thead>
-               <tbody>{activeProject.tasks.map(t => (<tr key={t.id} style={styles.invoiceRow}><td style={styles.invoiceCell}><div style={{ fontWeight: 'bold' }}>{t.name}</div><div style={{ fontSize: '12px', color: '#666' }}>{t.subtitle}</div></td><td style={styles.invoiceCell}>{t.status === 'done' ? 'Completed' : 'Planned'}</td><td style={{ ...styles.invoiceCell, textAlign: 'right' }}>{formatCurrency(t.budget)}</td></tr>))}</tbody>
+
+            {/* INFO FACTURE [cite: 14] */}
+            <div style={{ marginBottom: '40px', borderTop:'2px solid black', paddingTop:'10px' }}>
+                <div style={{ display: 'flex', gap: '40px', fontSize: '13px', fontWeight: 'bold' }}>
+                    <div>FACTURE N° {invoiceNum}</div>
+                    <div>DATE: {invoiceDate}</div>
+                </div>
+            </div>
+
+            {/* TABLEAU [cite: 12] */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '40px' }}>
+               <thead>
+                  <tr style={{ borderBottom: '1px solid #000' }}>
+                     <th style={{ textAlign: 'left', padding: '10px 0', fontSize: '11px', textTransform: 'uppercase' }}>Quantité</th>
+                     <th style={{ textAlign: 'left', padding: '10px 0', fontSize: '11px', textTransform: 'uppercase', width: '60%' }}>Description</th>
+                     <th style={{ textAlign: 'right', padding: '10px 0', fontSize: '11px', textTransform: 'uppercase' }}>Prix Unitaire</th>
+                     <th style={{ textAlign: 'right', padding: '10px 0', fontSize: '11px', textTransform: 'uppercase' }}>Total</th>
+                  </tr>
+               </thead>
+               <tbody>
+                     <tr style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: '15px 0', fontSize: '13px' }}>1</td>
+                        <td style={{ padding: '15px 0', fontSize: '13px' }}>
+                            <div style={{ fontWeight: '600' }}>{activeTask.name}</div>
+                            {activeTask.subtitle && <div style={{ fontSize: '11px', color: '#666', marginTop:'4px' }}>{activeTask.subtitle}</div>}
+                        </td>
+                        <td style={{ padding: '15px 0', textAlign: 'right', fontSize: '13px' }}>{formatCurrency(activeTask.budget)}</td>
+                        <td style={{ padding: '15px 0', textAlign: 'right', fontSize: '13px' }}>{formatCurrency(activeTask.budget)}</td>
+                     </tr>
+               </tbody>
             </table>
-            <div style={styles.invoiceTotal}>Total: {formatCurrency(total)}</div>
+
+            {/* TOTAUX [cite: 16] */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '60px' }}>
+                <div style={{ width: '200px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', fontSize: '12px' }}>
+                        <span>SOUS-TOTAL</span>
+                        <span>{formatCurrency(activeTask.budget)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', fontWeight: 'bold', borderTop: '1px solid #000', marginTop: '5px' }}>
+                        <span>TOTAL DÛ</span>
+                        <span>{formatCurrency(activeTask.budget)}</span>
+                    </div>
+                    {/* MENTIONS LEGALES [cite: 11] */}
+                    <div style={{ fontSize: '9px', color: '#666', marginTop: '10px', textAlign: 'right' }}>
+                        TVA non applicable, art. 293 B du CGI
+                    </div>
+                </div>
+            </div>
+
+            {/* FOOTER [cite: 15] */}
+            <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: 'bold', letterSpacing: '1px', marginTop: 'auto' }}>
+                NOUS VOUS REMERCIONS DE VOTRE CONFIANCE.
+            </div>
          </div>
       </div>
     );
@@ -630,6 +765,10 @@ export default function App() {
                 <input name="contactName" style={styles.input} required placeholder="Client or Contractor Name" />
                 <label style={styles.label}>Role / Description</label>
                 <input name="contactRole" style={styles.input} placeholder="e.g. Electrician" />
+                <label style={styles.label}>Address</label>
+                <input name="contactAddress" style={styles.input} placeholder="123 Street..." />
+                <label style={styles.label}>SIRET</label>
+                <input name="contactSiret" style={styles.input} placeholder="000 000 000 00000" />
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: 1 }}>
                      <label style={styles.label}>Phone</label>
