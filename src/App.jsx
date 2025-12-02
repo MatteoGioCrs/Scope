@@ -35,12 +35,22 @@ const Icons = {
   Edit: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>,
   Phone: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>,
   Mail: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
-  User: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+  User: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>,
+  Play: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>,
+  Pause: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>,
+  Clock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>,
+  Printer: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
 };
 
 // --- DATA HELPERS ---
 const generateId = () => '_' + Math.random().toString(36).substr(2, 9);
 const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+const formatTime = (seconds) => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${h}h ${m < 10 ? '0'+m : m}m ${s < 10 ? '0'+s : s}s`;
+};
 
 // --- STYLES ---
 const styles = {
@@ -204,6 +214,18 @@ const styles = {
     border: 'none',
     cursor: 'pointer'
   }
+  // Time Tracker Styles
+  timerBox: { backgroundColor: '#101010', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: `1px solid ${THEME.colors.border}`, marginBottom: '24px' },
+  timerDisplay: { fontSize: '42px', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', marginBottom: '16px' },
+  timerBtn: (active) => ({ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: active ? 'rgba(255, 69, 58, 0.2)' : 'rgba(10, 132, 255, 0.2)', color: active ? THEME.colors.danger : THEME.colors.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }),
+  
+  // Invoice Styles
+  invoiceFrame: { backgroundColor: 'white', color: 'black', minHeight: '100dvh', padding: '40px', fontFamily: 'Georgia, serif' },
+  invoiceHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #000', paddingBottom: '20px', marginBottom: '30px' },
+  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginBottom: '30px' },
+  invoiceRow: { borderBottom: '1px solid #ddd' },
+  invoiceCell: { padding: '12px 0', textAlign: 'left' },
+  invoiceTotal: { fontSize: '24px', fontWeight: 'bold', textAlign: 'right', marginTop: '20px' }
 };
 
 // --- COMPONENTS ---
@@ -274,6 +296,9 @@ export default function App() {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [modal, setModal] = useState({ open: false, type: null, initialData: null });
+  const [ticker, setTicker] = useState(0);
+  // Fait avancer l'horloge toutes les secondes
+  useEffect(() => { const interval = setInterval(() => setTicker(t => t + 1), 1000); return () => clearInterval(interval); }, []);
 
   useEffect(() => {
     localStorage.setItem('scope_v6_contacts', JSON.stringify(projects));
@@ -354,6 +379,26 @@ export default function App() {
     setModal({ open: false, type: null });
   };
 
+  const toggleTimer = (taskId) => {
+    const updatedProjects = projects.map(p => {
+      if (p.id !== activeProjectId) return p;
+      const updatedTasks = p.tasks.map(t => { 
+        if (t.id !== taskId) return t; 
+        const now = new Date(); 
+        if (t.timerStart) { 
+          // STOP TIMER
+          const elapsed = (now.getTime() - new Date(t.timerStart).getTime()) / 1000; 
+          return { ...t, timerStart: null, timeSpent: (t.timeSpent || 0) + elapsed }; 
+        } else { 
+          // START TIMER
+          return { ...t, timerStart: now.toISOString() }; 
+        } 
+      });
+      return { ...p, tasks: updatedTasks };
+    });
+    setProjects(updatedProjects);
+  };
+
   const toggleTask = (taskId) => {
     setProjects(projects.map(p => p.id === activeProjectId ? { ...p, tasks: p.tasks.map(t => t.id === taskId ? { ...t, status: t.status === 'todo' ? 'done' : 'todo' } : t) } : p));
   };
@@ -387,13 +432,26 @@ export default function App() {
 
     return (
       <div style={styles.mobileFrame}>
-        <div style={styles.header}><div style={styles.headerInner}>
-          <div onClick={() => setView('dashboard')} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: THEME.colors.primary, cursor: 'pointer', marginLeft: '-8px', padding: '8px' }}>
-            <Icons.Back /> <span style={{fontSize: '17px', fontWeight: '500'}}>Back</span>
+        <div style={styles.header}>
+          <div style={styles.headerInner}>
+            {/* Bouton Retour */}
+            <div onClick={() => setView('dashboard')} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: THEME.colors.primary, cursor: 'pointer', marginLeft: '-8px', padding: '8px' }}>
+              <Icons.Back /> <span style={{fontSize: '17px', fontWeight: '500'}}>Back</span>
+            </div>
+            
+            <span style={{ fontWeight: '600', fontSize: '17px' }}>Project</span>
+            
+            {/* NOUVEAU : Groupe de boutons (Imprimante + Edit) */}
+            <div style={{ display: 'flex', gap: '12px' }}>
+               <button onClick={() => setView('invoice')} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', padding: '4px' }}>
+                  <Icons.Printer />
+               </button>
+               <button onClick={() => setModal({ open: true, type: 'project', initialData: activeProject })} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', fontSize:'17px', fontWeight:'500' }}>
+                  Edit
+               </button> 
+            </div>
           </div>
-          <span style={{ fontWeight: '600', fontSize: '17px' }}>Project</span>
-          <button onClick={() => setModal({ open: true, type: 'project', initialData: activeProject })} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', fontSize:'17px', fontWeight:'500' }}>Edit</button> 
-        </div></div>
+        </div>
 
         <div style={styles.body}>
           <div style={{ marginBottom: '16px', padding: '0 4px' }}>
@@ -402,9 +460,11 @@ export default function App() {
                {formatCurrency(totalCost)} &bull; {completed}/{activeProject.tasks.length} Done
             </div>
           </div>
-          {activeProject.tasks.length === 0 ? <div style={{ padding: '32px', textAlign: 'center', color: THEME.colors.textMuted, border: '2px dashed #2C2C2E', borderRadius: '16px' }}>No tasks added yet.</div> : 
+          {activeProject.tasks.length === 0 ? (
+            <div style={{ padding: '32px', textAlign: 'center', color: THEME.colors.textMuted, border: '2px dashed #2C2C2E', borderRadius: '16px' }}>No tasks added yet.</div>
+          ) : (
             activeProject.tasks.map(t => <TaskCard key={t.id} task={t} onToggle={toggleTask} onDelete={deleteTask} onView={(task) => { setActiveTaskId(task.id); setView('task-detail'); }} />)
-          }
+          )}
         </div>
         <button style={styles.primaryBtn} onClick={() => setModal({ open: true, type: 'task' })}><Icons.Plus /> New Task</button>
       </div>
@@ -415,6 +475,9 @@ export default function App() {
   const renderTaskDetail = () => {
     if (!activeTask) return null;
     const contacts = activeTask.contacts || [];
+    const isRunning = !!activeTask.timerStart;
+    const currentSeconds = (activeTask.timeSpent || 0) + (isRunning ? (Date.now() - new Date(activeTask.timerStart).getTime()) / 1000 : 0);
+    const hourlyRate = (activeTask.budget > 0 && currentSeconds > 60) ? (activeTask.budget / (currentSeconds / 3600)) : 0;
 
     return (
       <div style={styles.mobileFrame}>
@@ -435,6 +498,25 @@ export default function App() {
             </div>
             <h2 style={{ fontSize: '28px', margin: '0 0 8px 0', fontWeight: '700', lineHeight: '1.2' }}>{activeTask.name}</h2>
             {activeTask.subtitle && <p style={{ fontSize: '17px', color: THEME.colors.textMuted, marginTop: 0 }}>{activeTask.subtitle}</p>}
+          </div>
+
+          {/* TIMER BOX */}
+          <div style={styles.timerBox}>
+            <div style={{ fontSize: '13px', color: THEME.colors.textMuted, fontWeight: '600', textTransform: 'uppercase', marginBottom: '8px' }}>Time Tracked</div>
+            <div style={styles.timerDisplay}>{formatTime(currentSeconds)}</div>
+            <div style={{ display:'flex', gap:'24px', alignItems:'center', width:'100%', justifyContent:'center' }}>
+              <button onClick={() => toggleTimer(activeTask.id)} style={styles.timerBtn(isRunning)}>
+                {isRunning ? <Icons.Pause /> : <Icons.Play />}
+              </button>
+              {activeTask.budget > 0 && (
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+                  <div style={{ fontSize: '12px', color: THEME.colors.textMuted }}>Effective Hourly Rate</div>
+                  <div style={{ fontSize: '18px', fontWeight: '700', color: hourlyRate < 30 ? THEME.colors.danger : THEME.colors.success }}>
+                    {formatCurrency(hourlyRate)}/h
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Details Box */}
@@ -493,6 +575,33 @@ export default function App() {
              </button>
            </div>
         </div>
+      </div>
+    );
+  };
+
+  const renderInvoice = () => {
+    if (!activeProject) return null;
+    const total = activeProject.tasks.reduce((sum, t) => sum + (parseFloat(t.budget) || 0), 0);
+    const date = new Date().toLocaleDateString('en-US');
+
+    return (
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', color: 'black' }}>
+         <div style={{ padding: '10px', background: '#eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
+            <button onClick={() => setView('project')} style={{ background: 'none', border: 'none', color: '#007AFF', fontSize: '16px', cursor: 'pointer' }}>Close</button>
+            <span style={{ fontWeight: '600' }}>Preview</span>
+            <button onClick={() => window.print()} style={{ background: '#007AFF', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Print / PDF</button>
+         </div>
+         <div style={styles.invoiceFrame}>
+            <div style={styles.invoiceHeader}>
+               <div><h1 style={{ margin: 0, fontSize: '32px' }}>INVOICE</h1><p style={{ margin: '8px 0 0 0', color: '#666' }}>Project: {activeProject.name}</p></div>
+               <div style={{ textAlign: 'right' }}><p style={{ margin: 0 }}>Date: {date}</p><p style={{ margin: '4px 0 0 0' }}>Ref: {activeProject.id.substr(1, 6).toUpperCase()}</p></div>
+            </div>
+            <table style={styles.invoiceTable}>
+               <thead><tr style={{ borderBottom: '2px solid #000' }}><th style={{ ...styles.invoiceCell, width: '60%' }}>Description</th><th style={{ ...styles.invoiceCell, width: '20%' }}>Status</th><th style={{ ...styles.invoiceCell, textAlign: 'right' }}>Amount</th></tr></thead>
+               <tbody>{activeProject.tasks.map(t => (<tr key={t.id} style={styles.invoiceRow}><td style={styles.invoiceCell}><div style={{ fontWeight: 'bold' }}>{t.name}</div><div style={{ fontSize: '12px', color: '#666' }}>{t.subtitle}</div></td><td style={styles.invoiceCell}>{t.status === 'done' ? 'Completed' : 'Planned'}</td><td style={{ ...styles.invoiceCell, textAlign: 'right' }}>{formatCurrency(t.budget)}</td></tr>))}</tbody>
+            </table>
+            <div style={styles.invoiceTotal}>Total: {formatCurrency(total)}</div>
+         </div>
       </div>
     );
   };
@@ -594,7 +703,7 @@ export default function App() {
         ::-webkit-scrollbar { width: 0px; background: transparent; }
       `}</style>
       
-      {view === 'dashboard' ? renderDashboard() : view === 'project' ? renderProjectDetail() : renderTaskDetail()}
+      {view === 'dashboard' ? renderDashboard() : view === 'project' ? renderProjectDetail() : view === 'invoice' ? renderInvoice() : renderTaskDetail()}
       {renderModal()}
     </div>
   );
