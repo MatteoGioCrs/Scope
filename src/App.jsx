@@ -213,7 +213,7 @@ const styles = {
     color: THEME.colors.primary,
     border: 'none',
     cursor: 'pointer'
-  }
+  },
   // Time Tracker Styles
   timerBox: { backgroundColor: '#101010', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: `1px solid ${THEME.colors.border}`, marginBottom: '24px' },
   timerDisplay: { fontSize: '42px', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', marginBottom: '16px' },
