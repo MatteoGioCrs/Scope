@@ -1,0 +1,23 @@
+/* index.css CORRIGÉ */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark; /* Force le mode sombre pour les barres de défilement */
+  background-color: #000000;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
