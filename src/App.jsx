@@ -219,48 +219,103 @@ const styles = {
   timerDisplay: { fontSize: '42px', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', marginBottom: '16px' },
   timerBtn: (active) => ({ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: active ? 'rgba(255, 69, 58, 0.2)' : 'rgba(10, 132, 255, 0.2)', color: active ? THEME.colors.danger : THEME.colors.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }),
   
-  // --- INVOICE STYLES (CORRECTED & CLEAN) ---
+  // --- INVOICE STYLES (ETHER PRO DESIGN) ---
   invoiceFrame: { 
     backgroundColor: 'white', 
     color: '#010101', 
-    minHeight: '100dvh', // Prend toute la hauteur
+    minHeight: '100dvh', 
     fontFamily: "'Poppins', sans-serif", 
-    position: 'relative',
-    fontSize: '12px' // Taille de base réduite pour tout faire tenir
+    fontSize: '12px',
+    lineHeight: '1.5'
   },
   
   // Header Noir avec diagonale
   invoiceHeaderBg: { 
     backgroundColor: '#000000', 
     color: 'white', 
-    padding: '40px 40px 70px 40px', // Padding réduit
-    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)', 
+    padding: '50px 50px 100px 50px', // Padding bas augmenté pour la diagonale
+    // La découpe : HautGauche, HautDroit, BasDroit (remonte), BasGauche (descend)
+    clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)', 
     WebkitPrintColorAdjust: 'exact', 
     printColorAdjust: 'exact',
-    marginBottom: '10px'
+    marginBottom: '20px'
   },
   
   // Typographie Logo
-  invoiceLogo: { fontFamily: "'Poppins', sans-serif", fontSize: '48px', fontWeight: '900', fontStyle: 'italic', color: '#ffd000', lineHeight: '1', margin: '0 0 20px 0', letterSpacing: '-1px' },
+  invoiceLogo: { 
+    fontFamily: "'Poppins', sans-serif", 
+    fontSize: '56px', 
+    fontWeight: '900', 
+    fontStyle: 'italic', 
+    color: '#ffd000', // Jaune Ether
+    lineHeight: '1', 
+    margin: '0', 
+    letterSpacing: '-2px' 
+  },
+
+  // Titre "FACTURE" à droite
+  invoiceTitleRight: {
+    fontSize: '32px',
+    fontWeight: '800',
+    color: '#ffffff',
+    textTransform: 'uppercase',
+    textAlign: 'right',
+    lineHeight: '1',
+    letterSpacing: '1px'
+  },
   
-  // Colonnes du Header
-  invoiceColTitle: { fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.5px' },
-  invoiceColText: { fontSize: '11px', lineHeight: '1.4', fontWeight: '400', color: '#ffffff' },
+  // Textes colonnes
+  invoiceColTitle: { 
+    fontSize: '11px', 
+    fontWeight: '800', 
+    textTransform: 'uppercase', 
+    marginBottom: '6px', 
+    letterSpacing: '1px',
+    color: '#ffd000' // Petit rappel jaune pour les titres de section
+  },
+  invoiceColText: { 
+    fontSize: '11px', 
+    lineHeight: '1.5', 
+    fontWeight: '400', 
+    color: '#e0e0e0' // Blanc cassé pour la lisibilité sur noir
+  },
   
-  // Tableau "Grille"
-  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '11px' },
-  invoiceHeaderCell: { padding: '8px 10px', textAlign: 'center', fontWeight: '800', textTransform: 'uppercase', border: '1px solid #ddd' },
-  invoiceCell: { padding: '10px', textAlign: 'left', border: '1px solid #ddd', verticalAlign: 'middle' },
+  // Tableau
+  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginTop: '30px', fontSize: '12px' },
+  invoiceHeaderCell: { 
+    padding: '12px', 
+    textAlign: 'center', 
+    fontWeight: '700', 
+    textTransform: 'uppercase', 
+    border: '1px solid #e0e0e0',
+    color: '#000',
+    fontSize: '10px',
+    letterSpacing: '1px'
+  },
+  invoiceCell: { 
+    padding: '12px', 
+    textAlign: 'left', 
+    border: '1px solid #e0e0e0', 
+    verticalAlign: 'middle' 
+  },
   
   // Boite Total
-  invoiceTotalContainer: { display: 'flex', justifyContent: 'flex-end', marginTop: '-1px' }, // -1px pour coller au tableau
-  invoiceTotalBox: { width: '200px', border: '1px solid #ddd' },
-  invoiceTotalRow: { display: 'flex', justifyContent: 'space-between', padding: '8px 10px', fontSize: '11px' },
+  invoiceTotalContainer: { display: 'flex', justifyContent: 'flex-end', marginTop: '-1px' },
+  invoiceTotalBox: { width: '250px', border: '1px solid #e0e0e0' },
+  invoiceTotalRow: { display: 'flex', justifyContent: 'space-between', padding: '12px', fontSize: '12px' },
   
   // Footer
-  invoiceFooter: { textAlign: 'center', fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', marginTop: '40px', paddingBottom: '20px' }
+  invoiceFooter: { 
+    textAlign: 'center', 
+    fontSize: '10px', 
+    fontWeight: '700', 
+    textTransform: 'uppercase', 
+    marginTop: '60px', 
+    paddingBottom: '30px',
+    letterSpacing: '2px'
+  }
+};
 
-}
 // --- COMPONENTS ---
 
 const ProjectCard = ({ project, onClick }) => {
@@ -662,115 +717,143 @@ export default function App() {
   };
 
   const renderInvoice = () => {
+    // Sécurité : si pas de tâche, on n'affiche rien
     if (!activeTask) return null;
     
+    // 1. Préparation des données (avec valeurs par défaut si vide)
     const client = (activeTask.contacts && activeTask.contacts.length > 0) ? activeTask.contacts[0] : {};
-    const invoiceNum = activeTask.invoiceNumber || "2025-001";
+    const invoiceNum = activeTask.invoiceNumber || "2025-003"; // Exemple de l'image
     const invoiceDate = activeTask.invoiceDate || new Date().toLocaleDateString('fr-FR');
     const totalAmount = activeTask.budget || 0;
 
-    // Générer des lignes vides pour remplir le tableau visuellement (comme sur ton image)
-    const emptyRows = Math.max(0, 8 - 1); // 8 lignes au total moins la ligne de la tâche
+    // Calcul pour remplir le tableau (minimum 10 lignes pour faire "pro")
+    const emptyRows = Math.max(0, 10 - 1); 
+
+    // Fonction utilitaire pour le formatage monétaire
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
+    };
 
     return (
-      <div style={{ backgroundColor: '#e0e0e0', minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
          
-         {/* Toolbar Flottante (Ne s'imprime pas) */}
-         <div className="no-print" style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', padding: '8px 16px', background: '#000', borderRadius: '50px', display: 'flex', gap: '16px', zIndex: 9999, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+         {/* --- BARRE D'OUTILS (Ne s'imprime pas) --- */}
+         <div className="no-print" style={{ position: 'fixed', bottom: 30, left: '50%', transform: 'translateX(-50%)', padding: '10px 20px', background: '#000', borderRadius: '50px', display: 'flex', gap: '20px', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
             <button onClick={() => setView('task-detail')} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>Fermer</button>
             <div style={{ width: 1, background: '#333' }}></div>
-            <button onClick={() => window.print()} style={{ background: 'none', border: 'none', color: '#ffd000', fontSize: '14px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-               <Icons.Printer /> IMPRIMER
+            <button onClick={() => window.print()} style={{ background: 'none', border: 'none', color: '#ffd000', fontSize: '14px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+               IMPRIMER LA FACTURE
             </button>
          </div>
 
-         {/* --- PAGE A4 --- */}
-         <div id="invoice-page" style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white', boxShadow: '0 0 20px rgba(0,0,0,0.1)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+         {/* --- FEUILLE A4 --- */}
+         <div id="invoice-page" style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white', boxShadow: '0 0 25px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column' }}>
             
-            {/* Styles d'impression stricts */}
+            {/* Styles spécifiques pour l'impression */}
             <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
               @media print { 
                 .no-print { display: none !important; } 
-                body { background-color: white; margin: 0; padding: 0; }
-                #invoice-page { width: 100% !important; height: 100% !important; boxShadow: none !important; margin: 0 !important; }
+                body { background-color: white; margin: 0; }
+                #invoice-page { width: 100% !important; boxShadow: none !important; margin: 0 !important; height: auto !important; }
                 @page { size: A4; margin: 0; }
+                /* Force l'impression des couleurs de fond (très important pour le header noir) */
                 * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
               } 
             `}</style>
 
-            {/* HEADER NOIR */}
+            {/* --- HEADER NOIR --- */}
             <div style={styles.invoiceHeaderBg}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    {/* GAUCHE: LOGO & INFO */}
-                    <div style={{ width: '55%' }}>
-                        <h1 style={styles.invoiceLogo}>ETHER.</h1>
+                    
+                    {/* COLONNE GAUCHE : LOGO + TON ENTREPRISE */}
+                    <div style={{ width: '50%' }}>
+                        {/* Logo */}
+                        <div style={{ marginBottom: '40px' }}>
+                            <h1 style={styles.invoiceLogo}>ETHER.</h1>
+                        </div>
                         
-                        <div style={styles.invoiceColTitle}>AUTO ENTREPRISE</div>
-                        <div style={styles.invoiceColText}>Visionary Collective</div>
-                        <div style={styles.invoiceColText}>SIRET : 98 74 98 888 000 13</div>
-                        <div style={styles.invoiceColText}>27 Impasse Coste</div>
-                        <div style={styles.invoiceColText}>13600, La Ciotat</div>
-                        <div style={{ ...styles.invoiceColText, marginTop: '8px' }}>+33 7 82 91 74 63</div>
-                        <div style={{ ...styles.invoiceColText, textDecoration: 'underline' }}>etherstudiocom@gmail.com</div>
-                    </div>
-
-                    {/* DROITE: CLIENT & FACTURE */}
-                    <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        
-                        {/* BLOC FACTURE (En haut à droite) */}
-                        <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '2px', marginBottom: '4px' }}>FACTURE</div>
-                            <div style={styles.invoiceColText}><span style={{ opacity: 0.7 }}>FACTURE N°</span> <span style={{ fontWeight: '700' }}>{invoiceNum}</span></div>
-                            <div style={styles.invoiceColText}><span style={{ opacity: 0.7 }}>DATE :</span> <span style={{ fontWeight: '700' }}>{invoiceDate}</span></div>
+                        {/* Tes infos */}
+                        <div>
+                            <div style={styles.invoiceColTitle}>AUTO ENTREPRISE</div>
+                            <div style={styles.invoiceColText}>Visionary Collective</div>
+                            <div style={styles.invoiceColText}>SIRET : 98 74 98 888 000 13</div>
+                            <div style={styles.invoiceColText}>27 Impasse Coste</div>
+                            <div style={styles.invoiceColText}>13600, La Ciotat</div>
+                            <div style={{ ...styles.invoiceColText, marginTop: '10px' }}>+33 7 82 91 74 63</div>
+                            <div style={styles.invoiceColText}>etherstudiocom@gmail.com</div>
                         </div>
 
-                        {/* BLOC CLIENT (Juste en dessous) */}
-                        <div style={{ textAlign: 'right', marginTop: '10px' }}>
+                        {/* Mention légale TVA (Positionnée en bas à gauche du noir) */}
+                        <div style={{ marginTop: '40px', fontSize: '10px', opacity: 0.5 }}>
+                            TVA non applicable, art. 293 B du CGI
+                        </div>
+                    </div>
+
+                    {/* COLONNE DROITE : TITRE FACTURE + CLIENT */}
+                    <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', textAlign: 'right' }}>
+                        
+                        {/* Gros Titre FACTURE */}
+                        <div style={{ marginBottom: '40px' }}>
+                            <div style={styles.invoiceTitleRight}>FACTURE</div>
+                        </div>
+
+                        {/* Infos Facture (Numéro / Date) */}
+                        <div style={{ marginBottom: '30px' }}>
+                             <div style={styles.invoiceColText}>
+                                <span style={{ opacity: 0.6, marginRight: '10px' }}>FACTURE N°</span>
+                                <span style={{ fontWeight: '700', color: 'white' }}>{invoiceNum}</span>
+                             </div>
+                             <div style={styles.invoiceColText}>
+                                <span style={{ opacity: 0.6, marginRight: '10px' }}>DATE :</span>
+                                <span style={{ fontWeight: '700', color: 'white' }}>{invoiceDate}</span>
+                             </div>
+                        </div>
+
+                        {/* Infos Client */}
+                        <div>
                             <div style={styles.invoiceColTitle}>À :</div>
-                            <div style={{ fontSize: '14px', fontWeight: '800', marginBottom: '2px' }}>{client.name || "NOM DU CLIENT"}</div>
-                            {client.company && <div style={styles.invoiceColText}>{client.company}</div>}
+                            <div style={{ fontSize: '14px', fontWeight: '700', marginBottom: '4px', color: 'white' }}>
+                                {client.company ? client.company.toUpperCase() : (client.name || "NOM DU CLIENT").toUpperCase()}
+                            </div>
                             {client.siret && <div style={styles.invoiceColText}>SIRET : {client.siret}</div>}
-                            {client.address && <div style={styles.invoiceColText}>{client.address}</div>}
-                            {client.email && <div style={{...styles.invoiceColText, textDecoration: 'underline'}}>{client.email}</div>}
+                            <div style={styles.invoiceColText}>{client.address || "Adresse du client"}</div>
+                            <div style={styles.invoiceColText}>{client.zip || ""} {client.city || ""}</div>
+                            {client.email && <div style={{...styles.invoiceColText, textDecoration: 'underline', marginTop: '5px'}}>{client.email}</div>}
                         </div>
                     </div>
-                </div>
-
-                <div style={{ marginTop: '30px', fontSize: '9px', opacity: 0.6 }}>
-                    TVA non applicable, art. 293 B du CGI
                 </div>
             </div>
 
-            {/* CONTENU BLANC */}
-            <div style={{ padding: '0 40px', flex: 1 }}>
+            {/* --- CONTENU PRINCIPAL (BLANC) --- */}
+            <div style={{ padding: '0 50px', flex: 1 }}>
                 
                 {/* TABLEAU */}
                 <table style={styles.invoiceTable}>
                    <thead>
                       <tr>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '15%' }}>QUANTITÉ</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '55%', textAlign: 'left' }}>DESCRIPTION</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '15%' }}>PRIX UNITAIRE</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '15%' }}>TOTAL</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '10%' }}>QUANTITÉ</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '50%', textAlign: 'left', paddingLeft: '20px' }}>DESCRIPTION</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '20%' }}>PRIX UNITAIRE</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '20%' }}>TOTAL</th>
                       </tr>
                    </thead>
                    <tbody>
-                         {/* Ligne de la tâche */}
+                         {/* Ligne de la tâche active */}
                          <tr>
                             <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>1</td>
-                            <td style={styles.invoiceCell}>
-                                <div style={{ fontWeight: '600' }}>{activeTask.name}</div>
-                                {activeTask.subtitle && <div style={{ fontSize: '10px', color: '#666' }}>{activeTask.subtitle}</div>}
+                            <td style={{ ...styles.invoiceCell, paddingLeft: '20px' }}>
+                                <div style={{ fontWeight: '600', fontSize: '13px' }}>{activeTask.name}</div>
+                                {activeTask.description && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>{activeTask.description}</div>}
                             </td>
-                            <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>{formatCurrency(totalAmount)}</td>
-                            <td style={{ ...styles.invoiceCell, textAlign: 'center', fontWeight: '700' }}>{formatCurrency(totalAmount)}</td>
+                            <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>{formatPrice(totalAmount)}</td>
+                            <td style={{ ...styles.invoiceCell, textAlign: 'center', fontWeight: '700' }}>{formatPrice(totalAmount)}</td>
                          </tr>
                          
-                         {/* Lignes vides pour remplir le tableau */}
+                         {/* Lignes vides pour remplir la page proprement */}
                          {[...Array(emptyRows)].map((_, i) => (
                              <tr key={i}>
-                                 <td style={{ ...styles.invoiceCell, height: '30px' }}></td>
+                                 <td style={{ ...styles.invoiceCell, height: '35px' }}></td>
                                  <td style={styles.invoiceCell}></td>
                                  <td style={styles.invoiceCell}></td>
                                  <td style={styles.invoiceCell}></td>
@@ -779,16 +862,16 @@ export default function App() {
                    </tbody>
                 </table>
 
-                {/* TOTAUX */}
+                {/* ZONE TOTAUX */}
                 <div style={styles.invoiceTotalContainer}>
                     <div style={styles.invoiceTotalBox}>
                         <div style={{ ...styles.invoiceTotalRow, borderBottom: '1px solid #ddd' }}>
                             <span>SOUS-TOTAL</span>
-                            <span>{formatCurrency(totalAmount)}</span>
+                            <span>{formatPrice(totalAmount)}</span>
                         </div>
-                        <div style={{ ...styles.invoiceTotalRow, fontWeight: '800', backgroundColor: '#f9f9f9' }}>
+                        <div style={{ ...styles.invoiceTotalRow, fontWeight: '800', backgroundColor: '#fafafa', fontSize: '14px' }}>
                             <span>TOTAL DÛ</span>
-                            <span>{formatCurrency(totalAmount)}</span>
+                            <span>{formatPrice(totalAmount)}</span>
                         </div>
                     </div>
                 </div>
