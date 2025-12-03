@@ -219,17 +219,29 @@ const styles = {
   timerDisplay: { fontSize: '42px', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', marginBottom: '16px' },
   timerBtn: (active) => ({ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: active ? 'rgba(255, 69, 58, 0.2)' : 'rgba(10, 132, 255, 0.2)', color: active ? THEME.colors.danger : THEME.colors.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }),
   
-  // Invoice Styles - ETHER LOOK
-  invoiceFrame: { backgroundColor: 'white', color: '#010101', minHeight: '100dvh', padding: '40px', fontFamily: "'Poppins', sans-serif" },
-  invoiceHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' },
-  // Le tableau doit être rigide pour éviter les décalages
-  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginBottom: '30px', tableLayout: 'fixed' }, 
-  invoiceRow: { borderBottom: '1px solid #eee' },
-  // Cellules : on force le padding pour aérer
-  invoiceCellHeader: { padding: '10px 0', textAlign: 'left', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#010101' },
-  invoiceCell: { padding: '16px 0', textAlign: 'left', fontSize: '13px', color: '#010101', verticalAlign: 'top' },
-  invoiceTotal: { fontSize: '20px', fontWeight: '700', textAlign: 'right', marginTop: '20px' },
-  invoiceLogoText: { fontFamily: "'Poppins', sans-serif", fontSize: '48px', fontWeight: '800', fontStyle: 'italic', letterSpacing: '-2px', lineHeight: '1', margin: 0, color: '#010101' }
+  // --- INVOICE STYLES (DESIGN ETHER BLACK & YELLOW) ---
+  invoiceFrame: { backgroundColor: 'white', color: '#010101', minHeight: '100dvh', fontFamily: "'Poppins', sans-serif", position: 'relative' },
+  // Le conteneur noir avec la découpe en biais
+  invoiceHeaderBg: { 
+    backgroundColor: '#010101', 
+    color: 'white', 
+    padding: '40px 50px 80px 50px', // Padding bas extra pour la découpe
+    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)', // <--- LA DIAGONALE MAGIQUE
+    WebkitPrintColorAdjust: 'exact', // Force l'impression du fond noir
+    printColorAdjust: 'exact',
+    marginBottom: '20px'
+  },
+  invoiceLogo: { fontFamily: "'Poppins', sans-serif", fontSize: '56px', fontWeight: '900', fontStyle: 'italic', color: '#ffd000', lineHeight: '0.8', margin: 0, letterSpacing: '-2px' },
+  invoiceTitle: { fontSize: '24px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2px', textAlign: 'right' },
+  invoiceCol: { fontSize: '12px', lineHeight: '1.5' },
+  invoiceLabel: { fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: '#888', marginBottom: '4px', letterSpacing: '1px' },
+  // Tableaux
+  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginTop: '20px' },
+  invoiceRow: { border: '1px solid #e5e5e5' }, // Bordures grises fines comme sur l'image
+  invoiceHeaderCell: { padding: '12px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', backgroundColor: 'transparent', color: '#010101' },
+  invoiceCell: { padding: '15px', textAlign: 'left', fontSize: '13px', borderRight: '1px solid #e5e5e5' }, // Séparateurs verticaux
+  invoiceTotalRow: { display: 'flex', justifyContent: 'flex-end', marginTop: '0' },
+  invoiceTotalBox: { width: '250px', border: '1px solid #e5e5e5', borderTop: 'none' }
 };
 
 // --- COMPONENTS ---
@@ -637,119 +649,137 @@ export default function App() {
     
     const client = (activeTask.contacts && activeTask.contacts.length > 0) ? activeTask.contacts[0] : {};
     const invoiceNum = activeTask.invoiceNumber || "DRAFT";
-    // Date du jour pour l'exemple, ou celle enregistrée
     const invoiceDate = activeTask.invoiceDate || new Date().toLocaleDateString('fr-FR');
     const totalAmount = activeTask.budget || 0;
 
     return (
-      <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh', color: '#010101' }}>
+      <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh' }}>
          {/* Toolbar (Ne s'imprime pas) */}
-         <div className="no-print" style={{ padding: '12px 20px', background: '#1c1c1e', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-            <button onClick={() => setView('task-detail')} style={{ background: 'none', border: 'none', color: '#0A84FF', fontSize: '16px', cursor: 'pointer', fontWeight: '500' }}>Fermer</button>
-            <span style={{ fontWeight: '600', color: 'white' }}>Aperçu</span>
-            <button onClick={() => window.print()} style={{ background: '#0A84FF', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Imprimer</button>
+         <div className="no-print" style={{ padding: '12px 20px', background: '#1c1c1e', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', position: 'sticky', top: 0, zIndex: 100 }}>
+            <button onClick={() => setView('task-detail')} style={{ background: 'none', border: 'none', color: '#ffd000', fontSize: '14px', cursor: 'pointer', fontWeight: '600', textTransform:'uppercase', letterSpacing:'1px' }}>Fermer</button>
+            <span style={{ fontWeight: '600', color: 'white' }}>APERÇU FACTURE</span>
+            <button onClick={() => window.print()} style={{ background: '#ffd000', color: 'black', border: 'none', padding: '10px 24px', borderRadius: '30px', fontSize: '13px', fontWeight: '800', cursor: 'pointer', textTransform:'uppercase' }}>Imprimer</button>
          </div>
 
-         {/* --- FEUILLE A4 ETHER --- */}
+         {/* --- PAGE A4 BLANCHE --- */}
          <div style={styles.invoiceFrame}>
-            {/* Import de la police Poppins depuis Google Fonts */}
             <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap');
               @media print { 
                 .no-print { display: none !important; } 
-                body { background-color: white; -webkit-print-color-adjust: exact; }
+                body { background-color: white; margin: 0; }
                 @page { margin: 0; size: auto; }
+                /* Force l'impression du background noir */
+                * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
               } 
             `}</style>
 
-            {/* HEADER */}
-            <div style={styles.invoiceHeader}>
-                {/* GAUCHE : LOGO & INFO */}
-                <div style={{ width: '50%' }}>
-                    {/* LOGO TEXTE STYLISÉ (Si tu veux mettre une image, remplace ce h1 par <img src="/logo.png" width="150" />) */}
-                    <h1 style={styles.invoiceLogoText}>
-                      ETHER<span style={{ color: '#ffd000' }}>.</span>
-                    </h1>
-                    
-                    <p style={{ margin: '5px 0 25px 0', fontSize: '11px', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase' }}>Visionary Collective</p>
-                    
-                    <div style={{ fontSize: '11px', lineHeight: '1.6', fontWeight: '400' }}>
-                        <div style={{ fontWeight:'700', marginBottom:'4px' }}>AUTO ENTREPRISE</div>
-                        <div>SIRET: 98 74 98 888 000 13</div>
-                        <div>27 Impasse Coste<br/>13600, La Ciotat</div>
-                        <div style={{ marginTop: '8px' }}>+33 7 82 91 74 63</div>
-                        <div>etherstudiocom@gmail.com</div>
-                    </div>
+            {/* --- HEADER NOIR & JAUNE (Avec diagonale) --- */}
+            <div style={styles.invoiceHeaderBg}>
+                {/* LIGNE 1 : LOGO & TITRE */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+                    <h1 style={styles.invoiceLogo}>ETHER.</h1>
+                    <div style={styles.invoiceTitle}>FACTURE</div>
                 </div>
 
-                {/* DROITE : CLIENT */}
-                <div style={{ width: '40%', textAlign: 'right' }}>
-                    <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '15px', color: '#999' }}>Facturé à :</div>
-                    <div style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>{client.name || "Nom du Client"}</div>
+                {/* LIGNE 2 : LES 3 COLONNES D'INFOS */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '12px', lineHeight: '1.6' }}>
                     
-                    <div style={{ fontSize: '12px', lineHeight: '1.5' }}>
-                        {client.company && <div style={{ fontWeight: '500' }}>{client.company}</div>}
-                        {client.address && <div style={{ whiteSpace: 'pre-wrap' }}>{client.address}</div>}
-                        <div style={{ marginTop: '8px' }}>
-                          {client.siret && <div>SIRET: {client.siret}</div>}
-                          {client.email && <div>{client.email}</div>}
-                          {client.phone && <div>{client.phone}</div>}
+                    [cite_start]{/* COLONNE 1 : MON ENTREPRISE [cite: 1, 2, 4, 5, 6] */}
+                    <div style={{ width: '30%' }}>
+                        <div style={{ fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>AUTO ENTREPRISE</div>
+                        <div style={{ marginBottom: '8px' }}>Visionary Collective</div>
+                        
+                        <div>SIRET : 98 74 98 888 000 13</div>
+                        <div>27 Impasse Coste</div>
+                        <div>13600, La Ciotat</div>
+                        <div style={{ marginTop: '8px' }}>+33 7 82 91 74 63</div>
+                        <div style={{ textDecoration: 'underline' }}>etherstudiocom@gmail.com</div>
+                    </div>
+
+                    [cite_start]{/* COLONNE 2 : CLIENT [cite: 10] */}
+                    <div style={{ width: '30%' }}>
+                         <div style={{ fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>À :</div>
+                         <div style={{ fontWeight: '700', fontSize:'13px', marginBottom:'4px' }}>{client.name || "NOM DU CLIENT"}</div>
+                         
+                         {client.company && <div>{client.company}</div>}
+                         {client.siret && <div>SIRET : {client.siret}</div>}
+                         {client.address && <div style={{ whiteSpace: 'pre-wrap' }}>{client.address}</div>}
+                         {client.phone && <div>{client.phone}</div>}
+                         {client.email && <div style={{ textDecoration: 'underline' }}>{client.email}</div>}
+                    </div>
+
+                    [cite_start]{/* COLONNE 3 : META DONNÉES [cite: 14] */}
+                    <div style={{ width: '30%', textAlign: 'right' }}>
+                        <div style={{ marginBottom: '5px' }}>
+                            <span style={{ fontWeight: '700', color:'#ccc' }}>FACTURE N°</span> <span style={{ fontWeight: '700' }}>{invoiceNum}</span>
+                        </div>
+                        <div>
+                            <span style={{ fontWeight: '700', color:'#ccc' }}>DATE :</span> <span style={{ fontWeight: '700' }}>{invoiceDate}</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* LIGNE DE SÉPARATION & INFO FACTURE */}
-            <div style={{ borderTop: '2px solid #010101', borderBottom: '2px solid #010101', padding: '15px 0', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '14px', fontWeight: '700' }}>FACTURE N° {invoiceNum}</div>
-                <div style={{ fontSize: '14px', fontWeight: '600' }}>DATE : {invoiceDate}</div>
-            </div>
-
-            {/* TABLEAU */}
-            <table style={styles.invoiceTable}>
-               <thead>
-                  <tr style={{ borderBottom: '1px solid #010101' }}>
-                     <th style={{ ...styles.invoiceCellHeader, width: '10%' }}>Qté</th>
-                     <th style={{ ...styles.invoiceCellHeader, width: '60%' }}>Description</th>
-                     <th style={{ ...styles.invoiceCellHeader, width: '15%', textAlign: 'right' }}>Prix Unit.</th>
-                     <th style={{ ...styles.invoiceCellHeader, width: '15%', textAlign: 'right' }}>Total</th>
-                  </tr>
-               </thead>
-               <tbody>
-                     <tr style={styles.invoiceRow}>
-                        <td style={styles.invoiceCell}>1</td>
-                        <td style={styles.invoiceCell}>
-                            <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '4px' }}>{activeTask.name}</div>
-                            {activeTask.subtitle && <div style={{ fontSize: '12px', color: '#666' }}>{activeTask.subtitle}</div>}
-                        </td>
-                        <td style={{ ...styles.invoiceCell, textAlign: 'right' }}>{formatCurrency(totalAmount)}</td>
-                        <td style={{ ...styles.invoiceCell, textAlign: 'right', fontWeight: '700' }}>{formatCurrency(totalAmount)}</td>
-                     </tr>
-               </tbody>
-            </table>
-
-            {/* TOTAUX */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <div style={{ width: '250px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '13px', borderBottom: '1px solid #eee' }}>
-                        <span style={{ fontWeight: '500' }}>Sous-Total</span>
-                        <span>{formatCurrency(totalAmount)}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 0', fontSize: '18px', fontWeight: '800', color: '#010101' }}>
-                        <span>TOTAL DÛ</span>
-                        <span>{formatCurrency(totalAmount)}</span>
-                    </div>
-                    
-                    <div style={{ fontSize: '10px', color: '#888', marginTop: '20px', textAlign: 'right', fontStyle: 'italic' }}>
-                        TVA non applicable, art. 293 B du CGI
-                    </div>
+                [cite_start]{/* MENTION TVA (Dans le noir, en bas) [cite: 11] */}
+                <div style={{ marginTop: '40px', fontSize: '10px', color: '#888' }}>
+                    TVA non applicable, art. 293 B du CGI
                 </div>
             </div>
 
-            {/* FOOTER */}
-            <div style={{ position: 'absolute', bottom: '40px', left: '40px', right: '40px', textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>Nous vous remercions de votre confiance.</div>
-                <div style={{ height: '1px', background: '#eee', width: '50px', margin: '0 auto' }}></div>
+            {/* --- BODY BLANC --- */}
+            <div style={{ padding: '0 50px' }}>
+                
+                [cite_start]{/* TABLEAU [cite: 12] */}
+                <table style={styles.invoiceTable}>
+                   <thead>
+                      <tr>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '15%', border: '1px solid #e5e5e5', borderRight: 'none' }}>Quantité</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '55%', border: '1px solid #e5e5e5', borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5' }}>Description</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '15%', textAlign: 'center', border: '1px solid #e5e5e5', borderLeft: 'none', borderRight: 'none' }}>Prix Unitaire</th>
+                         <th style={{ ...styles.invoiceHeaderCell, width: '15%', textAlign: 'center', border: '1px solid #e5e5e5', borderLeft: 'none' }}>Total</th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                         <tr style={{ borderBottom: '1px solid #e5e5e5' }}>
+                            <td style={{ ...styles.invoiceCell, textAlign: 'center', borderLeft: '1px solid #e5e5e5' }}>1</td>
+                            <td style={styles.invoiceCell}>
+                                <div style={{ fontWeight: '600' }}>{activeTask.name}</div>
+                                {activeTask.subtitle && <div style={{ fontSize: '12px', color: '#666', marginTop:'4px' }}>{activeTask.subtitle}</div>}
+                            </td>
+                            <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>{formatCurrency(totalAmount)}</td>
+                            <td style={{ ...styles.invoiceCell, textAlign: 'center', fontWeight: '700', borderRight: '1px solid #e5e5e5' }}>{formatCurrency(totalAmount)}</td>
+                         </tr>
+                         {/* Lignes vides pour le style "Tableau plein" comme sur l'image */}
+                         {[...Array(3)].map((_, i) => (
+                             <tr key={i} style={{ height: '40px', borderBottom: '1px solid #e5e5e5' }}>
+                                 <td style={{ borderLeft: '1px solid #e5e5e5', borderRight: '1px solid #e5e5e5' }}></td>
+                                 <td style={{ borderRight: '1px solid #e5e5e5' }}></td>
+                                 <td style={{ borderRight: '1px solid #e5e5e5' }}></td>
+                                 <td style={{ borderRight: '1px solid #e5e5e5' }}></td>
+                             </tr>
+                         ))}
+                   </tbody>
+                </table>
+
+                [cite_start]{/* TOTAUX (Box en bas à droite) [cite: 16] */}
+                <div style={styles.invoiceTotalRow}>
+                    <div style={styles.invoiceTotalBox}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', borderBottom: '1px solid #e5e5e5', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                            <span>Sous-Total</span>
+                            <span>{formatCurrency(totalAmount)}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', fontSize: '13px', fontWeight: '800', backgroundColor: '#f9f9f9' }}>
+                            <span>TOTAL DÛ</span>
+                            <span>{formatCurrency(totalAmount)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                [cite_start]{/* FOOTER [cite: 15] */}
+                <div style={{ marginTop: '60px', textAlign: 'center', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>
+                    NOUS VOUS REMERCIONS DE VOTRE CONFIANCE.
+                </div>
+
             </div>
          </div>
       </div>
