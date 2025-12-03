@@ -194,7 +194,6 @@ const styles = {
     borderTop: `1px solid ${THEME.colors.border}`,
     boxShadow: '0 -10px 40px rgba(0,0,0,0.5)'
   },
-  // New Styles for Contacts
   contactRow: {
     display: 'flex',
     alignItems: 'center',
@@ -214,105 +213,119 @@ const styles = {
     border: 'none',
     cursor: 'pointer'
   },
-  // Time Tracker Styles
   timerBox: { backgroundColor: '#101010', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: `1px solid ${THEME.colors.border}`, marginBottom: '24px' },
   timerDisplay: { fontSize: '42px', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', marginBottom: '16px' },
   timerBtn: (active) => ({ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: active ? 'rgba(255, 69, 58, 0.2)' : 'rgba(10, 132, 255, 0.2)', color: active ? THEME.colors.danger : THEME.colors.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }),
-  
-  // --- INVOICE STYLES (ETHER PRO DESIGN) ---
-  invoiceFrame: { 
-    backgroundColor: 'white', 
-    color: '#010101', 
-    minHeight: '100dvh', 
-    fontFamily: "'Poppins', sans-serif", 
-    fontSize: '12px',
-    lineHeight: '1.5'
-  },
-  
-  // Header Noir avec diagonale
-  invoiceHeaderBg: { 
-    backgroundColor: '#000000', 
-    color: 'white', 
-    padding: '50px 50px 100px 50px', // Padding bas augmenté pour la diagonale
-    // La découpe : HautGauche, HautDroit, BasDroit (remonte), BasGauche (descend)
-    clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)', 
-    WebkitPrintColorAdjust: 'exact', 
-    printColorAdjust: 'exact',
-    marginBottom: '20px'
-  },
-  
-  // Typographie Logo
-  invoiceLogo: { 
-    fontFamily: "'Poppins', sans-serif", 
-    fontSize: '56px', 
-    fontWeight: '900', 
-    fontStyle: 'italic', 
-    color: '#ffd000', // Jaune Ether
-    lineHeight: '1', 
-    margin: '0', 
-    letterSpacing: '-2px' 
-  },
 
-  // Titre "FACTURE" à droite
-  invoiceTitleRight: {
-    fontSize: '32px',
-    fontWeight: '800',
-    color: '#ffffff',
+  // --- INVOICE STYLES (INTEGRATED) ---
+  previewContainer: {
+    backgroundColor: '#333', 
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start', 
+    padding: '40px',
+    overflowY: 'auto'
+  },
+  invoicePage: {
+    width: '210mm',
+    minHeight: '297mm',
+    backgroundColor: 'white',
+    position: 'relative',
+    boxShadow: '0 0 20px rgba(0,0,0,0.5)', 
+    display: 'flex',
+    flexDirection: 'column',
+    fontFamily: "'Poppins', sans-serif",
+    color: '#000',
+    margin: '0 auto' 
+  },
+  headerSection: {
+    backgroundColor: '#000000',
+    color: 'white',
+    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)', 
+    padding: '40px 50px 80px 50px', 
+    position: 'relative',
+    WebkitPrintColorAdjust: 'exact', 
+    printColorAdjust: 'exact'
+  },
+  logoText: {
+    fontFamily: "'Poppins', sans-serif",
+    fontWeight: '900', 
+    fontStyle: 'italic',
+    fontSize: '56px',
+    color: '#FFD700', 
+    lineHeight: '1',
+    marginBottom: '30px',
+    letterSpacing: '-1px'
+  },
+  mainTitle: {
+    fontSize: '28px',
+    fontWeight: '700',
     textTransform: 'uppercase',
     textAlign: 'right',
-    lineHeight: '1',
     letterSpacing: '1px'
   },
-  
-  // Textes colonnes
-  invoiceColTitle: { 
-    fontSize: '11px', 
-    fontWeight: '800', 
-    textTransform: 'uppercase', 
-    marginBottom: '6px', 
-    letterSpacing: '1px',
-    color: '#ffd000' // Petit rappel jaune pour les titres de section
+  columnTitle: {
+    fontSize: '11px',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    marginBottom: '8px',
+    color: '#fff' 
   },
-  invoiceColText: { 
-    fontSize: '11px', 
-    lineHeight: '1.5', 
-    fontWeight: '400', 
-    color: '#e0e0e0' // Blanc cassé pour la lisibilité sur noir
+  infoText: {
+    fontSize: '11px',
+    lineHeight: '1.6',
+    fontWeight: '400',
+    color: '#eee' 
   },
-  
-  // Tableau
-  invoiceTable: { width: '100%', borderCollapse: 'collapse', marginTop: '30px', fontSize: '12px' },
-  invoiceHeaderCell: { 
-    padding: '12px', 
-    textAlign: 'center', 
-    fontWeight: '700', 
-    textTransform: 'uppercase', 
-    border: '1px solid #e0e0e0',
-    color: '#000',
+  tableContainer: {
+    padding: '0 50px',
+    marginTop: '20px',
+    flex: 1 
+  },
+  gridTable: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '11px',
+    marginTop: '20px'
+  },
+  gridHeader: {
+    border: '1px solid #ccc', 
+    padding: '12px',
+    textAlign: 'center',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    color: '#000'
+  },
+  gridCell: {
+    border: '1px solid #ccc', 
+    padding: '12px',
+    verticalAlign: 'middle',
+    color: '#000'
+  },
+  totalSection: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: '-1px' 
+  },
+  totalBox: {
+    width: '200px',
+    border: '1px solid #ccc',
+    borderTop: 'none' 
+  },
+  totalRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px 12px',
+    fontSize: '11px'
+  },
+  footerText: {
+    textAlign: 'center',
     fontSize: '10px',
-    letterSpacing: '1px'
-  },
-  invoiceCell: { 
-    padding: '12px', 
-    textAlign: 'left', 
-    border: '1px solid #e0e0e0', 
-    verticalAlign: 'middle' 
-  },
-  
-  // Boite Total
-  invoiceTotalContainer: { display: 'flex', justifyContent: 'flex-end', marginTop: '-1px' },
-  invoiceTotalBox: { width: '250px', border: '1px solid #e0e0e0' },
-  invoiceTotalRow: { display: 'flex', justifyContent: 'space-between', padding: '12px', fontSize: '12px' },
-  
-  // Footer
-  invoiceFooter: { 
-    textAlign: 'center', 
-    fontSize: '10px', 
-    fontWeight: '700', 
-    textTransform: 'uppercase', 
-    marginTop: '60px', 
-    paddingBottom: '30px',
-    letterSpacing: '2px'
+    fontWeight: '800', 
+    textTransform: 'uppercase',
+    padding: '40px 0',
+    marginTop: 'auto' 
   }
 };
 
@@ -349,7 +362,6 @@ const ProjectCard = ({ project, onClick }) => {
   );
 };
 
-// Updated TaskCard: Now clicking it triggers onView instead of onEdit
 const TaskCard = ({ task, onToggle, onDelete, onView }) => (
   <div style={{ ...styles.card, flexDirection: 'row', alignItems: 'flex-start', gap: '16px', padding: '16px', backgroundColor: '#131313', border: `1px solid ${THEME.colors.border}` }}>
     <div onClick={(e) => { e.stopPropagation(); onToggle(task.id); }} style={{ cursor: 'pointer', paddingTop: '2px' }}>
@@ -380,12 +392,12 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [view, setView] = useState('dashboard'); // dashboard, project, task-detail
+  const [view, setView] = useState('dashboard'); // dashboard, project, task-detail, invoice
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [modal, setModal] = useState({ open: false, type: null, initialData: null });
   const [ticker, setTicker] = useState(0);
-  // Fait avancer l'horloge toutes les secondes
+  
   useEffect(() => { const interval = setInterval(() => setTicker(t => t + 1), 1000); return () => clearInterval(interval); }, []);
 
   useEffect(() => {
@@ -428,7 +440,9 @@ export default function App() {
       goalDate: fd.get('goalDate'),
       status: isEditing ? modal.initialData.status : 'todo',
       subtasks: isEditing ? modal.initialData.subtasks : [],
-      contacts: isEditing ? modal.initialData.contacts : [] // Preserve contacts!
+      contacts: isEditing ? modal.initialData.contacts : [],
+      invoiceNumber: isEditing ? modal.initialData.invoiceNumber : null,
+      invoiceDate: isEditing ? modal.initialData.invoiceDate : null
     };
     const updatedProjects = projects.map(p => {
       if (p.id !== activeProjectId) return p;
@@ -450,12 +464,10 @@ export default function App() {
         role: fd.get('contactRole'), 
         phone: fd.get('contactPhone'), 
         email: fd.get('contactEmail'),
-        // Ajout des nouveaux champs
         address: fd.get('contactAddress'),
         siret: fd.get('contactSiret')
     };
 
-    // Deep update to add contact to specific task
     const updatedProjects = projects.map(p => {
       if (p.id !== activeProjectId) return p;
       const updatedTasks = p.tasks.map(t => {
@@ -477,11 +489,9 @@ export default function App() {
         if (t.id !== taskId) return t; 
         const now = new Date(); 
         if (t.timerStart) { 
-          // STOP TIMER
           const elapsed = (now.getTime() - new Date(t.timerStart).getTime()) / 1000; 
           return { ...t, timerStart: null, timeSpent: (t.timeSpent || 0) + elapsed }; 
         } else { 
-          // START TIMER
           return { ...t, timerStart: now.toISOString() }; 
         } 
       });
@@ -503,10 +513,8 @@ export default function App() {
 
   const aiStub = () => alert("AI Rephrase would trigger here.");
 
-  // --- NOUVELLE FONCTION : Génère le numéro de facture (ex: 2025-001) ---
   const generateInvoiceNumber = () => {
     const year = new Date().getFullYear();
-    // On cherche tous les numéros de facture existants dans toutes les tâches
     let maxNum = 0;
     projects.forEach(p => {
       p.tasks.forEach(t => {
@@ -516,28 +524,22 @@ export default function App() {
         }
       });
     });
-    // On incrémente (ex: 001)
     const nextNum = (maxNum + 1).toString().padStart(3, '0');
     return `${year}-${nextNum}`;
   };
 
-  // --- MODIFICATION : Quand on ouvre la facture, on génère le numéro si besoin ---
   const openInvoice = (task) => {
     if (!task.invoiceNumber) {
-      // Si la tâche n'a pas encore de numéro, on en crée un et on sauvegarde
       const newInvoiceNumber = generateInvoiceNumber();
       const updatedTask = { ...task, invoiceNumber: newInvoiceNumber, invoiceDate: new Date().toLocaleDateString('fr-FR') };
       
-      // Mise à jour du state (sauvegarde)
       const updatedProjects = projects.map(p => {
         if (p.id !== activeProjectId) return p;
         const updatedTasks = p.tasks.map(t => t.id === task.id ? updatedTask : t);
         return { ...p, tasks: updatedTasks };
       });
       setProjects(updatedProjects);
-      // On met à jour la vue active avec les nouvelles données
-      // Attention: il faut attendre que le state se mette à jour, ou utiliser l'objet local
-      // Pour faire simple ici, on force la vue invoice
+      // We also update activeTask id in state if needed, but react handles re-render
     }
     setView('invoice');
   };
@@ -564,18 +566,13 @@ export default function App() {
       <div style={styles.mobileFrame}>
         <div style={styles.header}>
           <div style={styles.headerInner}>
-            {/* Bouton Retour */}
             <div onClick={() => setView('dashboard')} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: THEME.colors.primary, cursor: 'pointer', marginLeft: '-8px', padding: '8px' }}>
               <Icons.Back /> <span style={{fontSize: '17px', fontWeight: '500'}}>Back</span>
             </div>
             
             <span style={{ fontWeight: '600', fontSize: '17px' }}>Project</span>
             
-            {/* NOUVEAU : Groupe de boutons (Imprimante + Edit) */}
             <div style={{ display: 'flex', gap: '12px' }}>
-               <button onClick={() => setView('invoice')} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', padding: '4px' }}>
-                  <Icons.Printer />
-               </button>
                <button onClick={() => setModal({ open: true, type: 'project', initialData: activeProject })} style={{ background: 'none', border: 'none', color: THEME.colors.primary, cursor: 'pointer', fontSize:'17px', fontWeight:'500' }}>
                   Edit
                </button> 
@@ -601,7 +598,6 @@ export default function App() {
     );
   };
 
-  // NEW VIEW: Task Detail Page
   const renderTaskDetail = () => {
     if (!activeTask) return null;
     const contacts = activeTask.contacts || [];
@@ -627,7 +623,6 @@ export default function App() {
         </div></div>
 
         <div style={styles.body}>
-          {/* Main Info */}
           <div style={{ padding: '0 4px' }}>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                {activeTask.priority && <span style={styles.tag(activeTask.priority)}>{activeTask.priority}</span>}
@@ -637,7 +632,6 @@ export default function App() {
             {activeTask.subtitle && <p style={{ fontSize: '17px', color: THEME.colors.textMuted, marginTop: 0 }}>{activeTask.subtitle}</p>}
           </div>
 
-          {/* TIMER BOX */}
           <div style={styles.timerBox}>
             <div style={{ fontSize: '13px', color: THEME.colors.textMuted, fontWeight: '600', textTransform: 'uppercase', marginBottom: '8px' }}>Time Tracked</div>
             <div style={styles.timerDisplay}>{formatTime(currentSeconds)}</div>
@@ -656,7 +650,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Details Box */}
           <div style={{ backgroundColor: '#1C1C1E', borderRadius: '14px', padding: '0 16px' }}>
             <div style={styles.contactRow}>
               <span style={{ color: THEME.colors.textMuted }}>Goal Date</span>
@@ -668,7 +661,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Notes */}
           {activeTask.notes && (
             <div>
               <label style={styles.label}>NOTES</label>
@@ -678,7 +670,6 @@ export default function App() {
             </div>
           )}
 
-          {/* CONTACTS SECTION */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                <label style={{...styles.label, marginBottom:0}}>CONTACTS & RESOURCES</label>
@@ -705,7 +696,6 @@ export default function App() {
             </div>
           </div>
 
-           {/* Delete Zone */}
            <div style={{ marginTop: '20px' }}>
              <button onClick={() => deleteTask(activeTask.id)} style={{ width: '100%', padding: '16px', borderRadius: '14px', backgroundColor: 'rgba(255, 69, 58, 0.1)', color: THEME.colors.danger, border: 'none', fontSize: '17px', fontWeight: '600', cursor: 'pointer' }}>
                Delete Task
@@ -717,171 +707,150 @@ export default function App() {
   };
 
   const renderInvoice = () => {
-    // Sécurité : si pas de tâche, on n'affiche rien
     if (!activeTask) return null;
+
+    const invoiceNum = activeTask.invoiceNumber || "2025-003";
+    const invoiceDate = activeTask.invoiceDate || "02/12/2025";
+    const client = activeTask.contacts?.[0] || {};
+    const totalAmount = activeTask.budget || 150;
     
-    // 1. Préparation des données (avec valeurs par défaut si vide)
-    const client = (activeTask.contacts && activeTask.contacts.length > 0) ? activeTask.contacts[0] : {};
-    const invoiceNum = activeTask.invoiceNumber || "2025-003"; // Exemple de l'image
-    const invoiceDate = activeTask.invoiceDate || new Date().toLocaleDateString('fr-FR');
-    const totalAmount = activeTask.budget || 0;
+    const formatPrice = (p) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p);
 
-    // Calcul pour remplir le tableau (minimum 10 lignes pour faire "pro")
-    const emptyRows = Math.max(0, 10 - 1); 
-
-    // Fonction utilitaire pour le formatage monétaire
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
-    };
+    const emptyRows = Math.max(0, 8 - 1); 
 
     return (
-      <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-         
-         {/* --- BARRE D'OUTILS (Ne s'imprime pas) --- */}
-         <div className="no-print" style={{ position: 'fixed', bottom: 30, left: '50%', transform: 'translateX(-50%)', padding: '10px 20px', background: '#000', borderRadius: '50px', display: 'flex', gap: '20px', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-            <button onClick={() => setView('task-detail')} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>Fermer</button>
-            <div style={{ width: 1, background: '#333' }}></div>
-            <button onClick={() => window.print()} style={{ background: 'none', border: 'none', color: '#ffd000', fontSize: '14px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-               IMPRIMER LA FACTURE
-            </button>
-         </div>
+      <div style={styles.previewContainer}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap');
+          
+          @media print {
+            body * { visibility: hidden; }
+            #invoice-page, #invoice-page * { 
+              visibility: visible; 
+            }
+            #invoice-page {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100% !important;
+              margin: 0 !important;
+              box-shadow: none !important;
+              height: auto !important;
+              min-height: 100% !important;
+            }
+            @page { size: A4; margin: 0mm; }
+          }
+          
+          .invoice-controls {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #000; padding: 10px 20px; border-radius: 30px; 
+            display: flex; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 1000;
+          }
+        `}</style>
 
-         {/* --- FEUILLE A4 --- */}
-         <div id="invoice-page" style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white', boxShadow: '0 0 25px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column' }}>
-            
-            {/* Styles spécifiques pour l'impression */}
-            <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-              @media print { 
-                .no-print { display: none !important; } 
-                body { background-color: white; margin: 0; }
-                #invoice-page { width: 100% !important; boxShadow: none !important; margin: 0 !important; height: auto !important; }
-                @page { size: A4; margin: 0; }
-                /* Force l'impression des couleurs de fond (très important pour le header noir) */
-                * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-              } 
-            `}</style>
+        <div className="invoice-controls no-print">
+          <button onClick={() => setView('task-detail')} style={{ background:'transparent', border:'none', color:'white', fontWeight:'600', cursor:'pointer' }}>Fermer</button>
+          <span style={{color:'#444'}}>|</span>
+          <button onClick={() => window.print()} style={{ background:'transparent', border:'none', color:'#FFD700', fontWeight:'700', cursor:'pointer' }}>IMPRIMER</button>
+        </div>
 
-            {/* --- HEADER NOIR --- */}
-            <div style={styles.invoiceHeaderBg}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    
-                    {/* COLONNE GAUCHE : LOGO + TON ENTREPRISE */}
-                    <div style={{ width: '50%' }}>
-                        {/* Logo */}
-                        <div style={{ marginBottom: '40px' }}>
-                            <h1 style={styles.invoiceLogo}>ETHER.</h1>
-                        </div>
-                        
-                        {/* Tes infos */}
-                        <div>
-                            <div style={styles.invoiceColTitle}>AUTO ENTREPRISE</div>
-                            <div style={styles.invoiceColText}>Visionary Collective</div>
-                            <div style={styles.invoiceColText}>SIRET : 98 74 98 888 000 13</div>
-                            <div style={styles.invoiceColText}>27 Impasse Coste</div>
-                            <div style={styles.invoiceColText}>13600, La Ciotat</div>
-                            <div style={{ ...styles.invoiceColText, marginTop: '10px' }}>+33 7 82 91 74 63</div>
-                            <div style={styles.invoiceColText}>etherstudiocom@gmail.com</div>
-                        </div>
-
-                        {/* Mention légale TVA (Positionnée en bas à gauche du noir) */}
-                        <div style={{ marginTop: '40px', fontSize: '10px', opacity: 0.5 }}>
-                            TVA non applicable, art. 293 B du CGI
-                        </div>
-                    </div>
-
-                    {/* COLONNE DROITE : TITRE FACTURE + CLIENT */}
-                    <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', textAlign: 'right' }}>
-                        
-                        {/* Gros Titre FACTURE */}
-                        <div style={{ marginBottom: '40px' }}>
-                            <div style={styles.invoiceTitleRight}>FACTURE</div>
-                        </div>
-
-                        {/* Infos Facture (Numéro / Date) */}
-                        <div style={{ marginBottom: '30px' }}>
-                             <div style={styles.invoiceColText}>
-                                <span style={{ opacity: 0.6, marginRight: '10px' }}>FACTURE N°</span>
-                                <span style={{ fontWeight: '700', color: 'white' }}>{invoiceNum}</span>
-                             </div>
-                             <div style={styles.invoiceColText}>
-                                <span style={{ opacity: 0.6, marginRight: '10px' }}>DATE :</span>
-                                <span style={{ fontWeight: '700', color: 'white' }}>{invoiceDate}</span>
-                             </div>
-                        </div>
-
-                        {/* Infos Client */}
-                        <div>
-                            <div style={styles.invoiceColTitle}>À :</div>
-                            <div style={{ fontSize: '14px', fontWeight: '700', marginBottom: '4px', color: 'white' }}>
-                                {client.company ? client.company.toUpperCase() : (client.name || "NOM DU CLIENT").toUpperCase()}
-                            </div>
-                            {client.siret && <div style={styles.invoiceColText}>SIRET : {client.siret}</div>}
-                            <div style={styles.invoiceColText}>{client.address || "Adresse du client"}</div>
-                            <div style={styles.invoiceColText}>{client.zip || ""} {client.city || ""}</div>
-                            {client.email && <div style={{...styles.invoiceColText, textDecoration: 'underline', marginTop: '5px'}}>{client.email}</div>}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* --- CONTENU PRINCIPAL (BLANC) --- */}
-            <div style={{ padding: '0 50px', flex: 1 }}>
+        <div id="invoice-page" style={styles.invoicePage}>
+          
+          <div style={styles.headerSection}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              
+              <div style={{ width: '50%' }}>
+                <div style={styles.logoText}>ETHER.</div>
                 
-                {/* TABLEAU */}
-                <table style={styles.invoiceTable}>
-                   <thead>
-                      <tr>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '10%' }}>QUANTITÉ</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '50%', textAlign: 'left', paddingLeft: '20px' }}>DESCRIPTION</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '20%' }}>PRIX UNITAIRE</th>
-                         <th style={{ ...styles.invoiceHeaderCell, width: '20%' }}>TOTAL</th>
-                      </tr>
-                   </thead>
-                   <tbody>
-                         {/* Ligne de la tâche active */}
-                         <tr>
-                            <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>1</td>
-                            <td style={{ ...styles.invoiceCell, paddingLeft: '20px' }}>
-                                <div style={{ fontWeight: '600', fontSize: '13px' }}>{activeTask.name}</div>
-                                {activeTask.description && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>{activeTask.description}</div>}
-                            </td>
-                            <td style={{ ...styles.invoiceCell, textAlign: 'center' }}>{formatPrice(totalAmount)}</td>
-                            <td style={{ ...styles.invoiceCell, textAlign: 'center', fontWeight: '700' }}>{formatPrice(totalAmount)}</td>
-                         </tr>
-                         
-                         {/* Lignes vides pour remplir la page proprement */}
-                         {[...Array(emptyRows)].map((_, i) => (
-                             <tr key={i}>
-                                 <td style={{ ...styles.invoiceCell, height: '35px' }}></td>
-                                 <td style={styles.invoiceCell}></td>
-                                 <td style={styles.invoiceCell}></td>
-                                 <td style={styles.invoiceCell}></td>
-                             </tr>
-                         ))}
-                   </tbody>
-                </table>
+                <div style={styles.columnTitle}>AUTO ENTREPRISE</div>
+                <div style={styles.infoText}>Visionary Collective</div>
+                <div style={styles.infoText}>SIRET : 98 74 98 888 000 13</div>
+                <div style={styles.infoText}>27 Impasse Coste</div>
+                <div style={styles.infoText}>13600, La Ciotat</div>
+                <div style={{...styles.infoText, marginTop:'5px'}}>+33 7 82 91 74 63</div>
+                <div style={{...styles.infoText, textDecoration:'underline'}}>etherstudiocom@gmail.com</div>
+                
+                <div style={{ marginTop: '30px', fontSize: '10px', opacity: 0.7, fontStyle: 'italic' }}>
+                  TVA non applicable, art. 293 B du CGI
+                </div>
+              </div>
 
-                {/* ZONE TOTAUX */}
-                <div style={styles.invoiceTotalContainer}>
-                    <div style={styles.invoiceTotalBox}>
-                        <div style={{ ...styles.invoiceTotalRow, borderBottom: '1px solid #ddd' }}>
-                            <span>SOUS-TOTAL</span>
-                            <span>{formatPrice(totalAmount)}</span>
-                        </div>
-                        <div style={{ ...styles.invoiceTotalRow, fontWeight: '800', backgroundColor: '#fafafa', fontSize: '14px' }}>
-                            <span>TOTAL DÛ</span>
-                            <span>{formatPrice(totalAmount)}</span>
-                        </div>
+              <div style={{ width: '45%', textAlign: 'right' }}>
+                <div style={styles.mainTitle}>FACTURE</div>
+                
+                <div style={{ margin: '20px 0 30px 0' }}>
+                  <div style={styles.infoText}>
+                      <span style={{fontWeight:'700'}}>FACTURE N°</span> {invoiceNum}
+                  </div>
+                  <div style={styles.infoText}>
+                      <span style={{fontWeight:'700'}}>DATE :</span> {invoiceDate}
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'left', display:'inline-block', minWidth:'200px' }}>
+                    <div style={styles.columnTitle}>À :</div>
+                    <div style={{ fontSize:'13px', fontWeight:'700', marginBottom:'4px' }}>
+                      {(client.company || client.name || "CLIENT NAME").toUpperCase()}
                     </div>
+                    <div style={styles.infoText}>SIRET : {client.siret || "N/A"}</div>
+                    <div style={styles.infoText}>{client.address || "Adresse..."}</div>
+                    <div style={styles.infoText}>{client.zip} {client.city}</div>
+                    <div style={{...styles.infoText, textDecoration:'underline'}}>{client.email}</div>
                 </div>
+              </div>
 
-                {/* FOOTER */}
-                <div style={styles.invoiceFooter}>
-                    NOUS VOUS REMERCIONS DE VOTRE CONFIANCE.
-                </div>
             </div>
-         </div>
+          </div>
+
+          <div style={styles.tableContainer}>
+            
+            <table style={styles.gridTable}>
+              <thead>
+                <tr>
+                  <th style={{...styles.gridHeader, width:'15%'}}>QUANTITÉ</th>
+                  <th style={{...styles.gridHeader, width:'55%', textAlign:'left'}}>DESCRIPTION</th>
+                  <th style={{...styles.gridHeader, width:'15%'}}>PRIX UNITAIRE</th>
+                  <th style={{...styles.gridHeader, width:'15%'}}>TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{...styles.gridCell, textAlign:'center'}}>1</td>
+                  <td style={styles.gridCell}>{activeTask.name || "Description du service"}</td>
+                  <td style={{...styles.gridCell, textAlign:'center'}}>{formatPrice(totalAmount)}</td>
+                  <td style={{...styles.gridCell, textAlign:'center'}}>{formatPrice(totalAmount)}</td>
+                </tr>
+                
+                {[...Array(emptyRows)].map((_, i) => (
+                  <tr key={i}>
+                    <td style={{...styles.gridCell, height:'35px'}}></td>
+                    <td style={styles.gridCell}></td>
+                    <td style={styles.gridCell}></td>
+                    <td style={styles.gridCell}></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={styles.totalSection}>
+              <div style={styles.totalBox}>
+                <div style={{...styles.totalRow, borderBottom:'1px solid #ccc'}}>
+                    <span>SOUS-TOTAL</span>
+                    <span>{formatPrice(totalAmount)}</span>
+                </div>
+                <div style={{...styles.totalRow, fontWeight:'700'}}>
+                    <span>TOTAL DÛ</span>
+                    <span>{formatPrice(totalAmount)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={styles.footerText}>
+              NOUS VOUS REMERCIONS DE VOTRE CONFIANCE.
+            </div>
+
+          </div>
+        </div>
       </div>
     );
   };
@@ -926,7 +895,6 @@ export default function App() {
                 </div>
               </>
             ) : (
-              // EXISTING PROJECT/TASK FORM
               <>
                 <label style={styles.label}>Title</label>
                 <input name="name" style={styles.input} required autoFocus defaultValue={data.name} placeholder="Name" />
